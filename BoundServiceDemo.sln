@@ -1,0 +1,25 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2024
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoundServiceDemo", "BoundServiceDemo.csproj", "{0AA509BC-079F-4F7F-AC61-76E801D3F715}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0AA509BC-079F-4F7F-AC61-76E801D3F715}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AA509BC-079F-4F7F-AC61-76E801D3F715}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AA509BC-079F-4F7F-AC61-76E801D3F715}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{0AA509BC-079F-4F7F-AC61-76E801D3F715}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AA509BC-079F-4F7F-AC61-76E801D3F715}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {61F5BC03-D5C3-46F3-BF42-BA08FE473383}
+	EndGlobalSection
+EndGlobal
