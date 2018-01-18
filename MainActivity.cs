@@ -9,11 +9,10 @@ namespace AndroidServiceDemo
 	public class MainActivity : Activity
 	{
 		Button timestampButton;
-		Button stopServiceButton;
-		Button restartServiceButton;
-		internal TextView timestampMessageTextView;
+		TextView timestampMessageTextView;
 
-		TimestampServiceConnection serviceConnection;
+	    private TimestampIntentServiceBroadCastReceiver _receiver;
+
 
 		protected override void OnCreate(Bundle savedInstanceState)
 		{
@@ -22,107 +21,49 @@ namespace AndroidServiceDemo
 			SetContentView(Resource.Layout.Main);
 
 			timestampButton = FindViewById<Button>(Resource.Id.get_timestamp_button);
+
+		    timestampMessageTextView = FindViewById<TextView>(Resource.Id.message_textview);
+
+            _receiver = new TimestampIntentServiceBroadCastReceiver
+            {
+                ReceiveHandler = result =>
+                {
+                    if (timestampMessageTextView != null)
+                    {
+                        timestampMessageTextView.Text = result;
+                    }
+                }
+            };
+
+		}
+
+        protected override void OnResume()
+        {
+            base.OnResume();
             timestampButton.Click += GetTimestampButton_Click;
 
-			stopServiceButton = FindViewById<Button>(Resource.Id.stop_timestamp_service_button);
-            stopServiceButton.Click += StopServiceButton_Click;
+            Android.Support.V4.Content.LocalBroadcastManager.GetInstance(this).RegisterReceiver(_receiver, new IntentFilter(AndroidMessageTag.IntentServiceResult));
+        }
 
-			restartServiceButton = FindViewById<Button>(Resource.Id.restart_timestamp_service_button);
-            restartServiceButton.Click += RestartServiceButton_Click;
-
-			timestampMessageTextView = FindViewById<TextView>(Resource.Id.message_textview);
-		}
-
-		protected override void OnStart()
-		{
-			base.OnStart();
-			if (serviceConnection == null)
-			{
-				serviceConnection = new TimestampServiceConnection(this);
-			}
-            DoBindService();
-		}
-
-		protected override void OnResume()
-		{
-			base.OnResume();
-            if (serviceConnection.IsConnected) {
-                UpdateUiForBoundService();
-            }
-            else {
-                UpdateUiForUnboundService();
-            }
-		}
-
-		protected override void OnPause()
+        protected override void OnPause()
 		{
 			timestampButton.Click -= GetTimestampButton_Click;
-			stopServiceButton.Click -= StopServiceButton_Click;
-			restartServiceButton.Click -= RestartServiceButton_Click;
+
+		    Android.Support.V4.Content.LocalBroadcastManager.GetInstance(this).UnregisterReceiver(_receiver);
 
 			base.OnPause();
 		}
 
-		protected override void OnStop()
-		{
-            DoUnBindService();
-			base.OnStop();
-		}
-
-        internal void UpdateUiForBoundService() {
-            timestampButton.Enabled = true;
-            stopServiceButton.Enabled = true;
-            restartServiceButton.Enabled = false;
-
-		}
-        internal void UpdateUiForUnboundService() {
-			timestampButton.Enabled = false;
-			stopServiceButton.Enabled = false;
-			restartServiceButton.Enabled = true;
-		}
-
-        void DoBindService() {
-			Intent intent = new Intent(this, typeof(TimestampService));
-
-            if (BindService(intent, serviceConnection, Bind.AutoCreate))
-            {
-                timestampMessageTextView.Text = "";
-            }
-            else
-            {
-                timestampMessageTextView.Text = "BindService failed!";
-            }
-        }
-
-        void DoUnBindService() {
-            UnbindService(serviceConnection);
-            restartServiceButton.Enabled = true;
-            timestampMessageTextView.Text = "";
-        }
-
 		void GetTimestampButton_Click(object sender, System.EventArgs e)
 		{
-			if (serviceConnection.IsConnected)
-			{
-				timestampMessageTextView.Text = serviceConnection.GetFormattedTimestamp();
-			}
-			else
-			{
-				timestampMessageTextView.SetText(Resource.String.service_not_connected);
-			}
+            var intent = new Intent(this, typeof(TimeStampIntentService));
+		    StartService(intent);
 		}
 
-	    private void StopServiceButton_Click(object sender, System.EventArgs e)
-		{
-            DoUnBindService();
-            UpdateUiForUnboundService();
-		}
-
-	    private void RestartServiceButton_Click(object sender, System.EventArgs e)
-		{
-            DoBindService();
-            UpdateUiForBoundService();
-		}
+	    public void UpdateTimeStampTExtView(string text)
+	    {
+	        timestampMessageTextView.Text = text;
+	    }
 	}
 }
 
